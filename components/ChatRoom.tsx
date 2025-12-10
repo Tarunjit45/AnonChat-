@@ -35,7 +35,6 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ user, category, onLeave }) =
     // Join the specific room
     socketService.joinRoom(category.id, (initialMsgs, initialCount) => {
       setMessages(initialMsgs);
-      // Count will be updated by the subscription shortly after
     });
 
     const unsubMsg = socketService.subscribeToMessages((newMsgs) => {
@@ -64,19 +63,17 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ user, category, onLeave }) =
     const moderation = await moderateContent(input);
 
     if (moderation.flagged) {
-      setError(`Message blocked: ${moderation.reason || 'Harmful content detected.'}`);
+      setError(`[BLOCKED] Content Violation: ${moderation.reason || 'Harmful payload detected.'}`);
       setIsSending(false);
       return;
     }
 
-    // 2. Send to backend with room ID
+    // 2. Send to backend
     try {
       await socketService.sendMessage(input, user, category.id);
       setInput('');
-      // Force focus back to input after send on mobile if needed, 
-      // but usually better to leave keyboard behavior native
     } catch (err) {
-      setError("Failed to send message. Connecting to server...");
+      setError("[ERROR] Transmission failed. Reconnecting...");
       console.error(err);
     } finally {
       setIsSending(false);
@@ -84,20 +81,20 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ user, category, onLeave }) =
   };
 
   return (
-    <div className="flex flex-col h-dvh bg-background relative animate-fade-in overflow-hidden">
+    <div className="flex flex-col h-dvh bg-background relative animate-fade-in overflow-hidden font-mono">
       <Header 
         onlineCount={onlineCount} 
         category={category} 
         onLeave={onLeave} 
       />
 
-      {/* Messages Area - Added generous padding bottom to account for fixed footer + safe area */}
-      <main className="flex-1 overflow-y-auto pt-16 pb-24 sm:pb-28 px-3 sm:px-6 scroll-smooth">
-        <div className="max-w-3xl mx-auto min-h-full flex flex-col justify-end">
+      {/* Messages Area */}
+      <main className="flex-1 overflow-y-auto pt-16 pb-20 sm:pb-24 px-2 sm:px-4 scroll-smooth">
+        <div className="max-w-4xl mx-auto min-h-full flex flex-col justify-end">
           {messages.length === 0 ? (
-            <div className="text-center text-zinc-500 py-10 opacity-60">
-              <p>No messages yet. Be the first to say hello!</p>
-              <p className="text-xs mt-2">Connected to Global Server</p>
+            <div className="text-center text-primary/30 py-10 opacity-60">
+              <p className="mb-2">*** ENCRYPTED CHANNEL ESTABLISHED ***</p>
+              <p className="text-xs">No logs found on this node.</p>
             </div>
           ) : (
             messages.map((msg) => (
@@ -112,42 +109,40 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ user, category, onLeave }) =
         </div>
       </main>
 
-      {/* Input Area - Fixed with Safe Area Support */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-white/5 p-3 sm:p-4 pb-safe z-50">
-        <div className="max-w-3xl mx-auto w-full">
+      {/* Input Area */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t border-primary/20 p-2 sm:p-4 pb-safe z-50">
+        <div className="max-w-4xl mx-auto w-full">
           {error && (
-            <div className="mb-2 text-red-400 text-xs text-center animate-fade-in bg-red-950/30 py-2 rounded-lg border border-red-900/50">
-              {error}
+            <div className="mb-2 text-alert text-xs font-bold font-mono animate-pulse">
+              ! SYSTEM ALERT: {error}
             </div>
           )}
-          <form onSubmit={handleSend} className="flex items-end gap-2 relative">
+          <form onSubmit={handleSend} className="flex items-center gap-2 relative bg-surface border border-primary/30 p-2 rounded-md">
+            <span className="text-primary font-bold pl-2 select-none">&gt;</span>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Message #${category.name}...`}
-              className="w-full bg-secondary text-zinc-100 placeholder-zinc-500 rounded-2xl py-3 pl-4 pr-12 text-base focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all border border-transparent focus:border-white/10"
+              placeholder="Enter payload..."
+              className="flex-1 bg-transparent text-white placeholder-primary/30 text-sm sm:text-base focus:outline-none font-mono"
               disabled={isSending}
-              // autoFocus is often disabled on mobile to prevent keyboard popping up immediately
+              autoComplete="off"
             />
             <button
               type="submit"
               disabled={!input.trim() || isSending}
-              className={`absolute right-1.5 bottom-1.5 p-2 rounded-xl transition-all active:scale-90 ${
+              className={`px-4 py-1.5 text-xs font-bold uppercase transition-all border border-primary/50 ${
                 input.trim() && !isSending
-                  ? 'bg-primary text-white hover:bg-blue-500 shadow-lg shadow-blue-500/20 scale-100'
-                  : 'bg-zinc-700 text-zinc-500 cursor-not-allowed scale-95'
+                  ? 'bg-primary/20 text-primary hover:bg-primary hover:text-black'
+                  : 'bg-transparent text-zinc-600 border-zinc-800 cursor-not-allowed'
               }`}
             >
-              {isSending ? (
-                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                  <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
-                </svg>
-              )}
+              {isSending ? 'SENDING...' : 'EXECUTE'}
             </button>
           </form>
+          <div className="text-[10px] text-primary/30 mt-1 text-center font-mono">
+            SECURE // ANONYMOUS // ENCRYPTED
+          </div>
         </div>
       </footer>
     </div>

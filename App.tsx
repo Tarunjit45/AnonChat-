@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { ChatRoom } from './components/ChatRoom';
 import { CategorySelector } from './components/CategorySelector';
+import { BootSequence } from './components/BootSequence';
 import { UserSession, Category } from './types';
 
 function App() {
   const [user, setUser] = useState<UserSession | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [isBooting, setIsBooting] = useState(true);
 
   useEffect(() => {
-    // Check for existing session or create new one
     const storedId = localStorage.getItem('anon_id');
     const storedName = localStorage.getItem('anon_name');
 
     if (storedId && storedName) {
       setUser({ id: storedId, username: storedName });
     } else {
-      // Generate random ID
       const newId = crypto.randomUUID();
-      // Generate random generic username like User-a19f
-      const randomSuffix = Math.floor(Math.random() * 0xffff).toString(16).padStart(4, '0');
-      const newName = `User-${randomSuffix}`;
+      // Generate a more "hacker-like" ID
+      const newName = `USR-${Math.floor(Math.random() * 900000) + 100000}`;
 
       localStorage.setItem('anon_id', newId);
       localStorage.setItem('anon_name', newName);
@@ -28,15 +27,13 @@ function App() {
     }
   }, []);
 
-  if (!user) {
-    return (
-      <div className="h-screen w-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
+  // Show boot sequence only on first load
+  if (isBooting) {
+    return <BootSequence onComplete={() => setIsBooting(false)} />;
   }
 
-  // If no category selected, show selector
+  if (!user) return null;
+
   if (!selectedCategory) {
     return (
       <CategorySelector 
@@ -45,7 +42,6 @@ function App() {
     );
   }
 
-  // If category selected, show chat room
   return (
     <ChatRoom 
       user={user} 

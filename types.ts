@@ -30,16 +30,16 @@ export type CategoryId = 'tech' | 'politics' | 'entertainment' | 'education' | '
 export interface Category {
   id: CategoryId;
   name: string;
-  emoji: string;
+  code: string;
   description: string;
-  color: string;
+  hexColor: string;
 }
 
 export const CATEGORIES: Category[] = [
-  { id: 'tech', name: 'Technology', emoji: '💻', description: 'Coding, gadgets, and AI talk.', color: 'from-blue-600 to-cyan-500' },
-  { id: 'politics', name: 'Politics', emoji: '⚖️', description: 'News, debate, and world events.', color: 'from-red-600 to-orange-500' },
-  { id: 'entertainment', name: 'Entertainment', emoji: '🎬', description: 'Movies, music, and games.', color: 'from-purple-600 to-pink-500' },
-  { id: 'education', name: 'Education', emoji: '📚', description: 'Learning, history, and science.', color: 'from-emerald-600 to-green-500' },
-  { id: 'life', name: 'Personal / Life', emoji: '🌱', description: 'Advice, stories, and lifestyle.', color: 'from-yellow-600 to-amber-500' },
-  { id: 'random', name: 'Random Chat', emoji: '🎲', description: 'Anything goes!', color: 'from-zinc-600 to-zinc-500' },
+  { id: 'tech', name: 'Technology', code: 'NODE_01', description: 'AI, Cybersec, Crypto', hexColor: '#00ff41' },
+  { id: 'politics', name: 'Politics', code: 'NODE_02', description: 'Global Affairs, Policies', hexColor: '#ff003c' },
+  { id: 'entertainment', name: 'Entertainment', code: 'NODE_03', description: 'Media, Arts, Games', hexColor: '#d600ff' },
+  { id: 'education', name: 'Education', code: 'NODE_04', description: 'Knowledge Base, Research', hexColor: '#00eaff' },
+  { id: 'life', name: 'Life / Advice', code: 'NODE_05', description: 'Human Protocols, Support', hexColor: '#ffbf00' },
+  { id: 'random', name: 'Random Uplink', code: 'NODE_06', description: 'Unstructured Data Stream', hexColor: '#ffffff' },
 ];
