@@ -74,7 +74,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ user, category, onLeave }) =
       await socketService.sendMessage(input, user, category.id);
       setInput('');
     } catch (err) {
-      setError("Failed to send message. Is the server running?");
+      setError("Failed to send message. Connecting to server...");
       console.error(err);
     } finally {
       setIsSending(false);
@@ -95,7 +95,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ user, category, onLeave }) =
           {messages.length === 0 ? (
             <div className="text-center text-zinc-500 py-10 opacity-60">
               <p>No messages yet. Be the first to say hello!</p>
-              <p className="text-xs mt-2">Ensure backend is running on port 3001</p>
+              <p className="text-xs mt-2">Connected to Global Server</p>
             </div>
           ) : (
             messages.map((msg) => (

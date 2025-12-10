@@ -21,42 +21,25 @@ A secure, anonymous chat application with 24-hour message retention and AI moder
     └── server.js       # Node.js + Socket.io implementation
 ```
 
-## How to Run (Local Development)
+## How to Run
 
-To make the chat work for real users, you need to run the **Backend** separately from the **Frontend**.
+### Frontend
+This app is currently configured to connect to a live backend on Render.
+1. Open `index.html` with a live server (e.g. VS Code Live Server) or run via a bundler.
+2. The app will automatically connect to `https://anonchat-backend-wl7l.onrender.com`.
 
-### 1. Start the Backend
-The backend handles the chat rooms and message broadcasting.
-
-1. Open a terminal and navigate to the `backend` folder.
-2. Initialize and install dependencies:
-   ```bash
-   npm init -y
-   npm install express socket.io cors
-   ```
-3. Start the server:
-   ```bash
-   node server.js
-   ```
-   *You should see: "Server running on port 3001"*
-
-### 2. Start the Frontend
-The frontend is the UI you see in the browser.
-
-1. Open a new terminal in the project root.
-2. If you are using a simple static server (like Live Server):
-   - Open `index.html`.
-3. If you are using a bundler (Vite/CRA):
-   - Run `npm install` and `npm start` (or `npm run dev`).
-
-**Note:** By default, the frontend tries to connect to `http://localhost:3001`. If you deploy the backend remotely, update `BACKEND_URL` in `services/socketService.ts`.
+### Backend
+The backend is deployed, but if you want to run it locally:
+1. Navigate to `backend/`.
+2. `npm install`
+3. `node server.js`
+4. Update `services/socketService.ts` to `http://localhost:3001`.
 
 ## Deployment Guide
 
 ### Backend (Render / Railway)
 1. Create a new repository for the `backend/` folder contents (`server.js` + `package.json`).
 2. Deploy to a Node.js service (e.g., Render, Railway, Heroku).
-3. Copy the **Deployment URL** (e.g., `https://my-anon-chat.onrender.com`).
 
 ### Frontend (Vercel / Netlify)
 1. In `services/socketService.ts`, change `BACKEND_URL` to your deployed backend URL.

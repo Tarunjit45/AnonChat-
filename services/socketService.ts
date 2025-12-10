@@ -1,8 +1,8 @@
 import { io, Socket } from 'socket.io-client';
 import { Message, UserSession } from '../types';
 
-// Default to localhost for development, can be changed for production
-const BACKEND_URL = 'http://localhost:3001';
+// LIVE BACKEND URL
+const BACKEND_URL = 'https://anonchat-backend-wl7l.onrender.com';
 
 class SocketService {
   private socket: Socket;
@@ -11,7 +11,7 @@ class SocketService {
     this.socket = io(BACKEND_URL, {
       autoConnect: false,
       reconnection: true,
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'] // Prefer websocket
     });
 
     this.socket.on('connect', () => {
@@ -41,8 +41,7 @@ class SocketService {
 
     // One-time listener for history when joining
     this.socket.once('chat_history', (messages: Message[]) => {
-      // We don't have the count yet, it comes via 'online_count' event
-      // We pass 0 initially, the subscription will update it immediately after
+      // We pass 0 count initially; it will be updated by the subscription event immediately after
       callback(messages, 0); 
     });
   }
@@ -79,18 +78,7 @@ class SocketService {
    */
   subscribeToMessages(callback: (messages: Message[]) => void) {
     const handler = (message: Message) => {
-      // The backend sends a single new message, but our frontend expects an array update or
-      // we can adapt the frontend. To keep compatibility with the previous component structure,
-      // we'll let the component handle appending, or we wrap it here.
-      // However, the previous mock service returned the *full list*. 
-      // The real backend emits *single* new messages. 
-      // We need to adjust the callback signature in the component or adjust here.
-      // Let's pass the single message and let the component append it.
-      // WAIT: The mock service passed `Message[]`. 
-      // To keep it simple for the component, we will pass the single message 
-      // but type it as Message[] with one item for compatibility, 
-      // OR better, we change the component to handle single updates.
-      // Let's stick to passing the single message inside an array to minimize refactor.
+      // The backend emits single messages. We wrap in array for component compatibility.
       callback([message]);
     };
 
