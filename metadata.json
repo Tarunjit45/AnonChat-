@@ -1,0 +1,5 @@
+{
+  "name": "AnonChat",
+  "description": "A fully anonymous community chat with AI-powered moderation and 24-hour message retention.",
+  "requestFramePermissions": []
+}
