@@ -12,8 +12,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) 
 
   if (message.isSystem) {
     return (
-      <div className="flex justify-center my-4 animate-fade-in">
-        <span className="text-xs text-zinc-500 bg-secondary/50 px-3 py-1 rounded-full border border-white/5">
+      <div className="flex justify-center my-3 sm:my-4 animate-fade-in">
+        <span className="text-[10px] sm:text-xs text-zinc-500 bg-secondary/50 px-2 sm:px-3 py-1 rounded-full border border-white/5">
           {message.text}
         </span>
       </div>
@@ -21,8 +21,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) 
   }
 
   return (
-    <div className={`flex flex-col mb-4 ${isOwn ? 'items-end' : 'items-start'} animate-fade-in`}>
-      <div className={`max-w-[85%] sm:max-w-[70%] rounded-2xl px-4 py-3 shadow-sm relative group transition-all duration-200 ${
+    <div className={`flex flex-col mb-3 sm:mb-4 ${isOwn ? 'items-end' : 'items-start'} animate-fade-in`}>
+      <div className={`max-w-[88%] sm:max-w-[70%] rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 shadow-sm relative group transition-all duration-200 ${
         isOwn 
           ? 'bg-primary text-white rounded-br-none' 
           : 'bg-secondary text-zinc-200 rounded-bl-none'
@@ -35,7 +35,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) 
         <p className="text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap">
           {message.text}
         </p>
-        <div className={`text-[10px] mt-1 opacity-50 flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+        <div className={`text-[9px] sm:text-[10px] mt-1 opacity-50 flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
           {timeString}
         </div>
       </div>
